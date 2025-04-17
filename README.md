@@ -1,6 +1,14 @@
 # [ICPR 2024] SuperSimpleNet
 
+ 	
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/2408-03143/supervised-defect-detection-on-kolektorsdd2)](https://paperswithcode.com/sota/supervised-defect-detection-on-kolektorsdd2?p=2408-03143)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/2408-03143/supervised-defect-detection-on-sensumsodf)](https://paperswithcode.com/sota/supervised-defect-detection-on-sensumsodf?p=2408-03143)
+
 Official implementation of [SuperSimpleNet : Unifying Unsupervised and Supervised Learning for Fast and Reliable Surface Defect Detection](https://arxiv.org/abs/2408.03143) - ICPR 2024.
+
+---
+
+Unsupervised version of SuperSimpleNet is also available in [Anomalib](https://github.com/open-edge-platform/anomalib).
 
 ## Environment
 ```bash
