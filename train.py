@@ -25,6 +25,7 @@ from datamodules.ksdd2 import KSDD2, NumSegmented
 from datamodules.sensum import Sensum
 from datamodules.mvtec import MVTec
 from datamodules.visa import Visa
+from datamodules.custom import Custom
 
 from model.supersimplenet import SuperSimpleNet
 
@@ -595,6 +596,52 @@ def main_sensum(device, config):
             )
 
 
+def main_custom(device, config, supervised: bool):
+    config = copy.deepcopy(config)
+    config["dataset"] = "custom"
+    config["category"] = "custom"
+    config["name"] = f"custom_{config['setup_name']}"
+
+    results_writer = ResultsWriter(
+        metrics=[
+            "AP-det",
+            "AP-loc",
+            "P-AUROC",
+            "I-AUROC",
+            "AUPRO",
+            "seg-AP-det",
+            "seg-I-AUROC",
+        ]
+    )
+
+    seed_everything(config["seed"], workers=True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+    model = SuperSimpleNet(image_size=config["image_size"], config=config)
+
+    datamodule = Custom(
+        root=Path(config["datasets_folder"]) / "custom",
+        supervised=supervised,
+        image_size=config["image_size"],
+        train_batch_size=config["batch"],
+        eval_batch_size=config["batch"],
+        num_workers=config["num_workers"],
+        seed=config["seed"],
+        flips=config["flips"],
+    )
+    datamodule.setup()
+
+    results = train_and_eval(
+        model=model, datamodule=datamodule, config=config, device=device
+    )
+
+    results_writer.add_result(category="custom", last=results)
+    results_writer.save(
+        Path(config["results_save_path"]) / config["setup_name"] / config["dataset"]
+    )
+
+
 def run_unsup(data_name):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -633,6 +680,9 @@ def run_unsup(data_name):
     if data_name == "mvtec":
         config["perlin_thr"] = 0.2
         main_mvtec(device=device, config=config)
+    if data_name == "custom":
+        config["perlin_thr"] = 0.2
+        main_custom(device=device, config=config, supervised=False)
 
 
 def run_sup(data_name):
@@ -669,6 +719,8 @@ def run_sup(data_name):
         main_sensum(device=device, config=config)
     if data_name == "ksdd2":
         main_ksdd2(device=device, config=config)
+    if data_name == "custom":
+        main_custom(device=device, config=config, supervised=True)
 
 
 def main():
