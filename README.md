@@ -103,7 +103,7 @@ Train the model:
 ```bash
 python train.py <dataset_name>
 ```
-Possible dataset names are: `mvtec`, `visa`, `sensum`, and `ksdd2`.
+Possible dataset names are: `mvtec`, `visa`, `sensum`, `ksdd2`, and `custom`.
 
 Slurm script `run_slurm_train.sh` is also provided to execute training on a slurm based system.
 
